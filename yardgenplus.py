@@ -1,12 +1,12 @@
 import sublime, sublime_plugin
 import re, time, os
 
-class YardGenCommand(sublime_plugin.TextCommand):
+class YardGenPlusCommand(sublime_plugin.TextCommand):
 
   def load_config(self):
     self.settings = {}
-    settings = sublime.load_settings('yardgen.sublime-settings')
-    for setting in ['author', 'initial_empty_line']:
+    settings = sublime.load_settings('yardgenplus.sublime-settings')
+    for setting in ['author', 'initial_empty_line', 'line_after_author', 'line_after_description', 'line_after_yield', 'line_before_return', 'line_after_return']:
       if settings.get(setting) is None:
         continue
       self.settings[setting] = settings.get(setting)
@@ -216,7 +216,8 @@ class YardGenCommand(sublime_plugin.TextCommand):
     if(self.settings.get('initial_empty_line')):
       self.lines.append("#")
     self.lines.append("# %s %s provides %s" % (r.group("mod_or_class").capitalize(),r.group("name"),self.tv("<description>")))
-    self.lines.append("#")
+    if(self.settings.get('line_after_description')):
+      self.lines.append("#")
     if(self.settings.get('author')):
       username = self.settings.get('author')
     elif os.name == 'nt':
@@ -224,7 +225,8 @@ class YardGenCommand(sublime_plugin.TextCommand):
     else:
       username = os.environ['USER']
     self.lines.append("# @author %s" % self.tv(username))
-    self.lines.append("#")
+    if(self.settings.get('line_after_author')):
+      self.lines.append("#")
     self.run_command(edit,self.concat())
 
   # Set the cursor to the left of the currrent line
@@ -272,7 +274,8 @@ class YardGenCommand(sublime_plugin.TextCommand):
     # Every method has a description
     self.lines.append("# " + self.tv("<description>"))
     # And another emty line
-    self.lines.append("#")
+    if(self.settings.get('line_after_description')):
+      self.lines.append("#")
     # Remember where the arguments start
     self.arg_start = self.count
     # Does the function have arguments?
@@ -294,11 +297,13 @@ class YardGenCommand(sublime_plugin.TextCommand):
             self.tv("<description>"))
     # All methods have a return except the initialize method
     if r.group("name") != "initialize":
-      self.lines.append("#")
+      if(self.settings.get('line_before_return')):
+        self.lines.append("#")
       self.lines.append("# @return [" + self.tv("<type>") +
         "] " + self.tv("<description>"))
     # An empty line between the params and the function
-    self.lines.append("# ")
+    if(self.settings.get('line_after_return')):
+      self.lines.append("#")
     # Get the indent
     self.indent = r.group("indent")
     # Convert the array to a string
@@ -372,7 +377,8 @@ class YardGenCommand(sublime_plugin.TextCommand):
           r = re.search(r'^\s*&',param)
           if not r == None:
             self.lines.append("# @yield " + self.tv("<description>"))
-            self.lines.append("#")
+            if(self.settings.get('line_after_yield')):
+              self.lines.append("#")
             if self.debug_method:
               print("Return yield block argument: " + self.concat())
             return self.concat()

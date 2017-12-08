@@ -1,0 +1,17 @@
+{
+  // Specify the @author. If not defined it will default to
+  // the login name through the environment variable USER
+  "author": "Joe Blog <Joe.Blog@nowhere.com>",
+  // Add an initial empty line at the beginning of the comment
+  "initial_empty_line": false,
+  // Add an empty line after the author
+  "line_after_author": false,
+  // Add an empty line after the description
+  "line_after_description": true,
+  // Add an empty line after a yield
+  "line_after_yield": false,
+  // Add an empty line before the return
+  "line_before_return": false,
+  // Add an empty line after the return
+  "line_after_return": false
+}
