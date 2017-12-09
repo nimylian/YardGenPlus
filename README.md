@@ -41,6 +41,7 @@ Yardgen simply didn't provide enough features for my taste, hence _this_ package
 ## Installation
 
 ### With Package Control (currently unavailable)
+Pull Request submitted: https://github.com/wbond/package_control_channel/pull/6783
 
 <!--
 
